@@ -39,6 +39,8 @@ def returnStatistic():
     global statistic
     print(statistic)
     ans = ''''''
+    if len(statistic) == 1:
+        return ""
     for i in statistic[1::]:
         ans += i[0]
         ans += ': '
