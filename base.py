@@ -1,60 +1,46 @@
-game = ['Stone', 'Paper', 'Scissors']
-m = len(game)
-statistic = [['', [[0, 0] for i in range(m)]]]
-#print(statistic)
-n = 1
-def add(name):
-    if name == "" or name == None:
-        name = "Pearson wihtout nickname"
-    global n, m, statistic
-    #print(n, m, name, statistic)
-    i = 0
-    while (statistic[i][0] != name) and (i < n):
-        i += 1
-        if (n <= i):
-            break
-    if i != n:
-        return
-    statistic.append([name, [[0, 0] for i in range(m)]])
-    n += 1
-def increase(name, win, turn):
-    if name == "" or name == None:
-        name = "Pearson wihtout nickname"
-    global n, m, statistic
-    i = 0
-    while (statistic[i][0] != name) and (i < n):
-        i += 1
-        if (n <= i):
-            break
-    j = 0
-    while (game[j] != turn) and (j < m):
-        j += 1
-        if (m <= j):
-            break
-    if j == m or i == n:
-        return
-    statistic[i][1][j][1] += int(win)
-    statistic[i][1][j][0] += 1
-def returnStatistic():
-    global statistic
-    print(statistic)
-    ans = ''''''
-    if len(statistic) == 1:
-        return ""
-    for i in statistic[1::]:
-        ans += i[0]
-        ans += ': '
-        for j in i[1]:
-            ans += str(j[0]) + '/' + str(j[1]) + ' '
-        ans += '\n'
-    return ans
+import random
 
-def winner(j, answer):
-    global game, m
-    if (j == 0 and answer == m - 1):
-        return True
-        return
-    if (answer == 0 and j == m - 1):
-        return False
-        return
-    return j > answer
+game = {"Stone": 0, "Paper": 1, "Scissors": 2}
+statistic = dict()
+
+def addUserIfItIsNotInStatistic(id):
+    try:
+        statistic[id]
+    except KeyError:
+        statistic[id] = [[0, 0] for i in range(len(game))]
+
+def increaseUserStatistic(id, answer, win): # An id may be also a name of user
+    statistic[id][game[answer]][0] += 1 # Added a game to user
+    if win:
+        statistic[id][game[answer]][1] += 1 # Added a win/lose of user
+
+def winner(user): ##function return True, when user won. False when bot won
+    bot = random.choice(list(game.keys()))
+    #user - string user input
+    #bot - number bot selected
+    user = game[user]
+    if user == 0 and game[bot] == (len(game) - 1):
+        return (True, bot)
+    if user == (len(game) - 1) and game[bot] == 0:
+        return (False, bot)
+    return ((user > game[bot]), bot)
+
+def returnStatistic():
+    a = ''
+    for key, value in statistic.items():
+        a += str(key) + ": "
+        for j in value:
+            a += str(j[0]) + '/' + str(j[1]) + " "
+        a += "\n"
+    if a == "":
+        return "Users are not playing"
+    return a
+
+def returnGameArray():
+    a = ''
+    for key in game.keys():
+        a += "/" + key
+        a += " "
+    if a == "":
+        return "Sorry, we couldn`t find any commands"
+    return a
