@@ -9,8 +9,8 @@ from config import botToken
 bot = telebot.TeleBot(botToken)
 
 def returnNameOrId(msg):
-    if (msg.chat.first_name is None) and (msg.chat.last_name is None):
-        return msg.chat.first_name + ' ' + msg.chat.last_name
+    if not((msg.chat.first_name is None) or (msg.chat.last_name is None)):
+        return msg.chat.first_name + '_' + msg.chat.last_name
     return msg.chat.id
 
 @bot.message_handler(commands = ['help'])
