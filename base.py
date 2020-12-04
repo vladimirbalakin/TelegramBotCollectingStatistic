@@ -23,7 +23,7 @@ def winner(user): ##function return True, when user won. False when bot won
         return (True, bot)
     if user == (len(game) - 1) and game[bot] == 0:
         return (False, bot)
-    return ((user > game[bot]), bot)
+    return ((user >= game[bot]), bot)
 
 def returnStatistic():
     a = ''
