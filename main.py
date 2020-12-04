@@ -3,10 +3,12 @@ from random import randint
 
 import telebot
 
-from base import addUserIfItIsNotInStatistic, increaseUserStatistic, winner, returnStatistic, returnGameArray
+from base import addUserIfItIsNotInStatistic, increaseUserStatistic, winner, returnStatistic, returnGameArray, readFromFile, writeToFile
 from config import botToken
 
 bot = telebot.TeleBot(botToken)
+
+readFromFile()
 
 def returnNameOrId(msg):
     if not((msg.chat.first_name is None) or (msg.chat.last_name is None)):
@@ -38,6 +40,7 @@ def answer(msg):
     id = returnNameOrId(msg)
     addUserIfItIsNotInStatistic(id)
     increaseUserStatistic(id, text, win[0])
+    writeToFile()
 
 @bot.message_handler(content_types = ['text'])
 def answer_(msg):

@@ -44,3 +44,14 @@ def returnGameArray():
     if a == "":
         return "Sorry, we couldn`t find any commands"
     return a
+
+def readFromFile():
+    global statistic
+    with open("st.txt", "r") as input_file:
+        text = input_file.read()
+    statistic = eval(text)
+    input_file.close()
+
+def writeToFile():
+    with open("st.txt", "w") as output_file:
+        text = output_file.write(str(statistic))
