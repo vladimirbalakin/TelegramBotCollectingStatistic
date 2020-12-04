@@ -24,7 +24,11 @@ def coll(msg):
 
 @bot.message_handler(commands = ['Paper', 'Stone', 'Scissors'])
 def answer(msg):
-    text = msg.text[1::]
+    if msg.text[-24::] == "@CollectingStatisticsBot":
+        text = msg.text[:-24:]
+        text = text[1::]
+    else:
+        text = msg.text[1::]
     win = winner(text)
     bot.send_message(msg.chat.id, win[1])
     if (win[0]):
