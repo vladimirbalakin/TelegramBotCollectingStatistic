@@ -15,6 +15,12 @@ def returnNameOrId(msg):
         return msg.chat.first_name + '_' + msg.chat.last_name
     return msg.chat.id
 
+@bot.message_handler(commands = ['start'])
+def starting(msg):
+    questions = [["Ваш пол", "Мужской", "Женский"], ["Ваш возраст", "Меньше или равен 18", "Больше 18 и меньше 25", "Больше или равен 25"], ["Вы - нервный человек? ", "Да", "Скорее да, чем нет", "Скорее нет, чем да", "Нет"], ["Что бы вы делали, если бы на вас хотел напасть некий человек(у вас с ним равные физические показатели)", "Попробовал бы договориться", "Убежал", "Встал бы в ступор", "Защитился", "Атаковал"], ["Вы склонны к депрессии?", "Да", "Скорее да, чем нет", "Скорее нет, чем да", "Нет"], ["Вы - апатичный человек?", "Да", "Скорее да, чем нет", "Скорее нет, чем да", "Нет"], ["Как часто вы играете в камень ножницы бумага?", "Больше 1 раза в день", "1 раз в день", "1 раз в неделю", "1 раз в месяц", "1 раз в год", "Меньше 1 раза в год", "Никогда"]]
+    for i in questions:
+        bot.send_poll(msg.chat.id, i[0], i[1::], is_anonymous = False)
+
 @bot.message_handler(commands = ['help'])
 def help(msg):
     ans = returnGameArray()
@@ -32,11 +38,12 @@ def answer(msg):
     else:
         text = msg.text[1::]
     win = winner(text)
-    bot.send_message(msg.chat.id, win[1])
+    bot.reply_to(msg, win[1])
+    # bot.send_message(msg.chat.id, win[1])
     if (win[0]):
-        bot.send_message(msg.chat.id, "User won")
+        bot.reply_to(msg, "User won")
     else:
-        bot.send_message(msg.chat.id, "Bot won")
+        bot.reply_to(msg, "Bot won")
     id = returnNameOrId(msg)
     addUserIfItIsNotInStatistic(id)
     increaseUserStatistic(id, text, win[0])
