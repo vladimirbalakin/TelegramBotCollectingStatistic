@@ -18,38 +18,49 @@ def returnNameOrId(msg):
     return msg.chat.id
 
 
+def returnNameOrIdPoll(msg):
+    if not ((msg.user.first_name is None) or (msg.user.last_name is None)):
+        return msg.user.first_name + '_' + msg.user.last_name
+    return msg.user.id
+
+
 closedPoll = 0
+messageID = 0
+questions = [["Ваш пол", "Мужской", "Женский"],
+             ["Ваш возраст", "Меньше или равен 18", "Больше 18 и меньше 25", "Больше или равен 25"],
+             ["Вы - нервный человек? ", "Да", "Скорее да, чем нет", "Скорее нет, чем да", "Нет"], [
+                 "Что бы вы делали, если бы на вас хотел напасть некий человек(у вас с ним равные физические "
+                 "показатели)",
+                 "Попробовал бы договориться", "Убежал", "Встал бы в ступор", "Защитился", "Атаковал"],
+             ["Вы склонны к депрессии?", "Да", "Скорее да, чем нет", "Скорее нет, чем да", "Нет"],
+             ["Вы - апатичный человек?", "Да", "Скорее да, чем нет", "Скорее нет, чем да", "Нет"],
+             ["Как часто вы играете в камень ножницы бумага?", "Больше 1 раза в день", "1 раз в день",
+              "1 раз в неделю", "1 раз в месяц", "1 раз в год", "Меньше 1 раза в год", "Никогда"]]
 
 
 @bot.message_handler(commands=['start'])
 def starting(msg):
-    global closedPoll
-    questions = [["Ваш пол", "Мужской", "Женский"],
-                 ["Ваш возраст", "Меньше или равен 18", "Больше 18 и меньше 25", "Больше или равен 25"],
-                 ["Вы - нервный человек? ", "Да", "Скорее да, чем нет", "Скорее нет, чем да", "Нет"], [
-                     "Что бы вы делали, если бы на вас хотел напасть некий человек(у вас с ним равные физические "
-                     "показатели)",
-                     "Попробовал бы договориться", "Убежал", "Встал бы в ступор", "Защитился", "Атаковал"],
-                 ["Вы склонны к депрессии?", "Да", "Скорее да, чем нет", "Скорее нет, чем да", "Нет"],
-                 ["Вы - апатичный человек?", "Да", "Скорее да, чем нет", "Скорее нет, чем да", "Нет"],
-                 ["Как часто вы играете в камень ножницы бумага?", "Больше 1 раза в день", "1 раз в день",
-                  "1 раз в неделю", "1 раз в месяц", "1 раз в год", "Меньше 1 раза в год", "Никогда"]]
+    global closedPoll, messageID, questions
+    addUserIfItIsNotInStatistic(returnNameOrId(msg))
     indexes = 0
     for i in questions:
-        bot.send_poll(msg.chat.id, i[0], i[1::], is_anonymous=False)
+        message = bot.send_poll(msg.chat.id, i[0], i[1::], is_anonymous=False)
+        messageID = message.poll.id
         indexes += 1
         closedPoll = indexes - 1
+        while closedPoll != -1:
+            pass
     ans = returnGameArray()
     bot.send_message(msg.chat.id, ans)
 
 
-# @bot.poll_answer_handler()
-# def answering(msg):
-#    print(msg)
 @bot.poll_answer_handler()
-def poll_answer_handler(msg):
-    print(msg)
-
+def answering(msg):
+    global closedPoll, questions
+    if msg.poll_id == messageID:
+        name = returnNameOrIdPoll(msg)
+        addUserAnswerPoll(name, questions[closedPoll][0], questions[closedPoll][msg.options_ids[0] + 1])
+        closedPoll = -1
 
 
 @bot.message_handler(commands=['help'])

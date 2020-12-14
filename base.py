@@ -39,7 +39,10 @@ def winner(user):
 def returnStatistic():
     a = ''
     for key, value in statistic.items():
-        a += str(key) + ""
+        a += str(key) + " { "
+        for k, v in value[0].items():
+            a += k + ' : ' + v + "\n"
+        a = a[:-1:] + ' } : '
         for j in value[1]:
             a += str(j[0]) + '/' + str(j[1]) + " "
         a += "\n"
