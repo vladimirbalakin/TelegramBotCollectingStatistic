@@ -4,23 +4,23 @@ game = {"Stone": 0, "Paper": 1, "Scissors": 2}
 statistic = dict()
 
 
-def addUserIfItIsNotInStatistic(id):
+def addUserIfItIsNotInStatistic(name):
     try:
-        statistic[id]
+        statistic[name]
     except KeyError:
-        statistic[id] = [{}, [[0, 0] for i in range(len(game))]]
+        statistic[name] = [{}, [[0, 0] for i in range(len(game))]]
 
 
-def addUserAnswerPoll(id, question, answer):
+def addUserAnswerPoll(name, question, answer):
     global statistic
-    statistic[id][0][quetion] = answer
+    statistic[name][0][question] = answer
 
 
-def increaseUserStatistic(id, answer, win):
+def increaseUserStatistic(name, answer, win):
     # An id may be also a name of user
-    statistic[id][1][game[answer]][0] += 1  # Added a game to user
+    statistic[name][1][game[answer]][0] += 1  # Added a game to user
     if win:
-        statistic[id][1][game[answer]][1] += 1  # Added a win of user
+        statistic[name][1][game[answer]][1] += 1  # Added a win of user
 
 
 def winner(user):
@@ -30,10 +30,10 @@ def winner(user):
     # bot - number bot selected
     user = game[user]
     if user == 0 and game[bot] == (len(game) - 1):
-        return (True, bot)
+        return True, bot
     if user == (len(game) - 1) and game[bot] == 0:
-        return (False, bot)
-    return ((user >= game[bot]), bot)
+        return False, bot
+    return (user >= game[bot]), bot
 
 
 def returnStatistic():
