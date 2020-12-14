@@ -4,7 +4,7 @@ from random import randint
 import telebot
 
 from base import addUserIfItIsNotInStatistic, increaseUserStatistic, winner, returnStatistic, returnGameArray, \
-    readFromFile, writeToFile
+    readFromFile, writeToFile, addUserAnswerPoll
 from config import botToken
 
 bot = telebot.TeleBot(botToken)
@@ -18,8 +18,12 @@ def returnNameOrId(msg):
     return msg.chat.id
 
 
+closedPoll = 0
+
+
 @bot.message_handler(commands=['start'])
 def starting(msg):
+    global closedPoll
     questions = [["Ваш пол", "Мужской", "Женский"],
                  ["Ваш возраст", "Меньше или равен 18", "Больше 18 и меньше 25", "Больше или равен 25"],
                  ["Вы - нервный человек? ", "Да", "Скорее да, чем нет", "Скорее нет, чем да", "Нет"], [
@@ -30,10 +34,22 @@ def starting(msg):
                  ["Вы - апатичный человек?", "Да", "Скорее да, чем нет", "Скорее нет, чем да", "Нет"],
                  ["Как часто вы играете в камень ножницы бумага?", "Больше 1 раза в день", "1 раз в день",
                   "1 раз в неделю", "1 раз в месяц", "1 раз в год", "Меньше 1 раза в год", "Никогда"]]
+    indexes = 0
     for i in questions:
         bot.send_poll(msg.chat.id, i[0], i[1::], is_anonymous=False)
+        indexes += 1
+        closedPoll = indexes - 1
     ans = returnGameArray()
     bot.send_message(msg.chat.id, ans)
+
+
+# @bot.poll_answer_handler()
+# def answering(msg):
+#    print(msg)
+@bot.poll_answer_handler()
+def poll_answer_handler(msg):
+    print(msg)
+
 
 
 @bot.message_handler(commands=['help'])
