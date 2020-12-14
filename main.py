@@ -1,5 +1,5 @@
 # from time import sleep
-from random import randint
+# from random import randint
 
 import telebot
 
@@ -84,13 +84,13 @@ def answer(msg):
     win = winner(text)
     bot.reply_to(msg, win[1])
     # bot.send_message(msg.chat.id, win[1])
-    if (win[0]):
+    if win[0]:
         bot.reply_to(msg, "User won")
     else:
         bot.reply_to(msg, "Bot won")
-    id = returnNameOrId(msg)
-    addUserIfItIsNotInStatistic(id)
-    increaseUserStatistic(id, text, win[0])
+    name = returnNameOrId(msg)
+    addUserIfItIsNotInStatistic(name)
+    increaseUserStatistic(name, text, win[0])
     writeToFile()
 
 
