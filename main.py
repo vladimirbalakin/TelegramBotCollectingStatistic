@@ -25,7 +25,7 @@ def returnNameOrIdPoll(msg):
 
 
 closedPoll = 0
-messageID = 0
+messageID = {}
 questions = [["Ваш пол", "Мужской", "Женский"],
              ["Ваш возраст", "Меньше или равен 18", "Больше 18 и меньше 25", "Больше или равен 25"],
              ["Вы - нервный человек? ", "Да", "Скорее да, чем нет", "Скорее нет, чем да", "Нет"], [
@@ -45,10 +45,9 @@ def starting(msg):
     indexes = 0
     for i in questions:
         message = bot.send_poll(msg.chat.id, i[0], i[1::], is_anonymous=False)
-        messageID = message.poll.id
+        messageID[message.poll.id] = indexes
         indexes += 1
-        closedPoll = indexes - 1
-        while closedPoll != -1:
+        while messageID[message.poll.id] != -1:
             pass
     ans = returnGameArray()
     bot.send_message(msg.chat.id, ans)
@@ -57,10 +56,11 @@ def starting(msg):
 @bot.poll_answer_handler()
 def answering(msg):
     global closedPoll, questions
-    if msg.poll_id == messageID:
+    if msg.poll_id in messageID.keys():
         name = returnNameOrIdPoll(msg)
+        closedPoll = messageID[msg.poll_id]
         addUserAnswerPoll(name, questions[closedPoll][0], questions[closedPoll][msg.options_ids[0] + 1])
-        closedPoll = -1
+        messageID[msg.poll_id] = -1
 
 
 @bot.message_handler(commands=['help'])
