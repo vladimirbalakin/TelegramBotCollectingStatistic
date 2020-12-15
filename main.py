@@ -24,7 +24,6 @@ def returnNameOrIdPoll(msg):
     return msg.user.id
 
 
-closedPoll = 0
 messageID = {}
 questions = [["Ваш пол", "Мужской", "Женский"],
              ["Ваш возраст", "Меньше или равен 18", "Больше 18 и меньше 25", "Больше или равен 25"],
@@ -40,7 +39,7 @@ questions = [["Ваш пол", "Мужской", "Женский"],
 
 @bot.message_handler(commands=['start'])
 def starting(msg):
-    global closedPoll, messageID, questions
+    global messageID, questions
     addUserIfItIsNotInStatistic(returnNameOrId(msg))
     indexes = 0
     for i in questions:
@@ -55,7 +54,7 @@ def starting(msg):
 
 @bot.poll_answer_handler()
 def answering(msg):
-    global closedPoll, questions
+    global questions
     if msg.poll_id in messageID.keys():
         name = returnNameOrIdPoll(msg)
         closedPoll = messageID[msg.poll_id]

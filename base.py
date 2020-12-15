@@ -17,14 +17,14 @@ def addUserAnswerPoll(name, question, answer):
 
 
 def increaseUserStatistic(name, answer, win):
-    # An id may be also a name of user
+    # An name may be also an id of user
     statistic[name][1][game[answer]][0] += 1  # Added a game to user
     if win:
         statistic[name][1][game[answer]][1] += 1  # Added a win of user
 
 
 def winner(user):
-    # function return (True, when user won. False when bot won, an answer of a bot)
+    """function return (True, when user won. False when bot won, an answer of a bot)"""
     bot = random.choice(list(game.keys()))
     # user - string user input
     # bot - number bot selected
@@ -65,6 +65,7 @@ def readFromFile():
     global statistic
     with open("st.txt", "r") as input_file:
         text = input_file.read()
+        text = text.splitlines()[0]
     statistic = eval(text)
     input_file.close()
 
