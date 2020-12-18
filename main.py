@@ -41,24 +41,24 @@ questions = [["Ваш пол", "Мужской", "Женский"],
 def starting(msg):
     global messageID, questions
     addUserIfItIsNotInStatistic(returnNameOrId(msg))
-    indexes = 0
-    for i in questions:
-        message = bot.send_poll(msg.chat.id, i[0], i[1::], is_anonymous=False)
-        messageID[message.poll.id] = indexes
-        indexes += 1
-        while messageID[message.poll.id] != -1:
-            pass
-    ans = returnGameArray()
-    bot.send_message(msg.chat.id, ans)
+    i = questions[0]
+    message = bot.send_poll(msg.chat.id, i[0], i[1::], is_anonymous=False)
+    messageID[message.poll.id] = 0
 
 
 @bot.poll_answer_handler()
 def answering(msg):
-    global questions
     if msg.poll_id in messageID.keys():
         name = returnNameOrIdPoll(msg)
-        closedPoll = messageID[msg.poll_id]
-        addUserAnswerPoll(name, questions[closedPoll][0], questions[closedPoll][msg.options_ids[0] + 1])
+        question_index = messageID[msg.poll_id]
+        if question_index < len(questions) - 1:
+            i = questions[question_index + 1]
+            message = bot.send_poll(msg.user.id, i[0], i[1::], is_anonymous=False)
+            messageID[message.poll.id] = question_index + 1
+        else:
+            ans = returnGameArray()
+            bot.send_message(msg.user.id, ans)
+        addUserAnswerPoll(name, questions[question_index][0], questions[question_index][msg.options_ids[0] + 1])
         messageID[msg.poll_id] = -1
 
 
@@ -75,11 +75,7 @@ def coll(msg):
 
 @bot.message_handler(commands=['Paper', 'Stone', 'Scissors'])
 def answer(msg):
-    if msg.text[-24::] == "@CollectingStatisticsBot":
-        text = msg.text[:-24:]
-        text = text[1::]
-    else:
-        text = msg.text[1::]
+    text = msg.text[1::]
     win = winner(text)
     bot.reply_to(msg, win[1])
     # bot.send_message(msg.chat.id, win[1])
