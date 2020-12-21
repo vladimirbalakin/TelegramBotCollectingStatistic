@@ -64,7 +64,7 @@ def returnGameArray():
 
 def readFromFile():
     global statistic
-    with open("st.txt", "r") as input_file:
+    with open("st.json", "r") as input_file:
         statistic = json.load(input_file)
     input_file.close()
 
