@@ -1,4 +1,5 @@
 import random
+import json
 
 game = {"Stone": 0, "Paper": 1, "Scissors": 2}
 statistic = dict()
@@ -64,12 +65,10 @@ def returnGameArray():
 def readFromFile():
     global statistic
     with open("st.txt", "r") as input_file:
-        text = input_file.read()
-        text = text.splitlines()[0]
-    statistic = eval(text)
+        statistic = json.load(input_file)
     input_file.close()
 
 
 def writeToFile():
-    with open("st.txt", "w") as output_file:
-        text = output_file.write(str(statistic))
+    with open("st.json", "w") as output_file:
+        json.dump(statistic, output_file)
